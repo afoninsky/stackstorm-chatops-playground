@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: st2chatops
+    chart: stackstorm-ha-0.8.4
+    heritage: Tiller
+    release: stackstorm
+    support: community
+    tier: frontend
+    vendor: stackstorm
+  name: stackstorm-st2chatops
+  namespace: stackstorm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: st2chatops
+      release: stackstorm
+      support: community
+  template:
+    metadata:
+      labels:
+        app: st2chatops
+        chart: stackstorm-ha-0.8.4
+        heritage: Tiller
+        release: stackstorm
+        support: community
+        tier: frontend
+        vendor: stackstorm
+    spec:
+      containers:
+      - env:
+          - name: HUBOT_ADAPTER
+            value: telegram-better
+          - name: HUBOT_NAME
+            value: MakeOBot
+          - name: TELEGRAM_TOKEN
+            value: "..."
+          - name: ST2_API_KEY
+            value: NmYwMzA0OGYyMjM2NDQwMDZjMjNlZjQ5OWJhYzJlMTE2ZWY2OTkwOGZjYWU4YTMyMzk3OTM5MjY2ZTFiODIxNA
+          - name: ST2_API
+            value: http://stackstorm-st2api.stackstorm.svc.cluster.local:9101/
+          - name: ST2_AUTH_URL
+            value: http://stackstorm-st2auth.stackstorm.svc.cluster.local:9101/
+          - name: ST2_STREAM_URL
+            value: http://stackstorm-st2stream.stackstorm.svc.cluster.local:9101/
+        # envFrom:
+        # - configMapRef:
+        #     name: stackstorm-st2-urls
+        #     optional: true
+        image: vkfont/debug:st-chatops
+        name: st2chatops
+        ports:
+        - containerPort: 8081
+          protocol: TCP
